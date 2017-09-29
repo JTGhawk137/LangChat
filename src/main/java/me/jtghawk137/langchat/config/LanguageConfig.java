@@ -31,7 +31,7 @@ public class LanguageConfig
             for (Object o : json)
             {
                 JSONObject language = (JSONObject) o;
-                if(language.get("name").toString().equalsIgnoreCase(name))
+                if (language.get("name").toString().equalsIgnoreCase(name))
                 {
                     this.name = language.get("name").toString();
                     this.id = Integer.parseInt(language.get("id").toString());
