@@ -7,6 +7,8 @@ import me.jtghawk137.langchat.mysql.MySQLConnection;
 import me.jtghawk137.langchat.mysql.MySQLSetterGetter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
+
 public class LangChat extends JavaPlugin
 {
 
@@ -37,6 +39,13 @@ public class LangChat extends JavaPlugin
     public void onDisable()
     {
         instance = null;
+        try
+        {
+            connection.getConnection().close();
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public String getVersion()
