@@ -10,9 +10,9 @@ import java.sql.SQLException;
 
 public class MySQLConnection
 {
-    private Connection connection;
-    public String host, database, username, password;
+    public String host, database, username, password, table;
     public int port;
+    private Connection connection;
 
     public void mysqlSetup()
     {
@@ -21,6 +21,7 @@ public class MySQLConnection
         database = FileManager.get("mysql.yml").getString("database");
         username = FileManager.get("mysql.yml").getString("username");
         password = FileManager.get("mysql.yml").getString("password");
+        table = FileManager.get("mysql.yml").getString("table");
 
         try
         {
@@ -37,6 +38,13 @@ public class MySQLConnection
                         + this.port + "/" + this.database, this.username, this.password));
 
                 Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "MYSQL CONNECTED");
+
+                connection.createStatement().executeUpdate(
+                        "CREATE TABLE IF NOT EXISTS " + table + " (" +
+                                "uuid VARCHAR(36)," +
+                                "languages VARCHAR(255)," +
+                                "llevel VARCHAR(255)," +
+                                "PRIMARY KEY (uuid, languages));");
             }
         } catch (SQLException e)
         {
@@ -47,6 +55,7 @@ public class MySQLConnection
         }
     }
 
+
     public Connection getConnection()
     {
         return connection;
@@ -56,5 +65,4 @@ public class MySQLConnection
     {
         this.connection = connection;
     }
-
 }

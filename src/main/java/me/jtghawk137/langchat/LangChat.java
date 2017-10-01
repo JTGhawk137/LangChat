@@ -3,8 +3,8 @@ package me.jtghawk137.langchat;
 import me.jtghawk137.langchat.commands.CommandRegister;
 import me.jtghawk137.langchat.config.FileManager;
 import me.jtghawk137.langchat.events.EventRegister;
-import me.jtghawk137.langchat.gui.GUIRegister;
 import me.jtghawk137.langchat.mysql.MySQLConnection;
+import me.jtghawk137.langchat.mysql.MySQLSetterGetter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LangChat extends JavaPlugin
@@ -13,8 +13,8 @@ public class LangChat extends JavaPlugin
     private static LangChat instance;
     private EventRegister eventRegister = new EventRegister();
     private CommandRegister commandRegister = new CommandRegister();
-    private GUIRegister guiRegister = new GUIRegister();
     private MySQLConnection connection = new MySQLConnection();
+    private MySQLSetterGetter setter;
     private String version = getDescription().getVersion();
 
     public static LangChat getInstance()
@@ -28,10 +28,9 @@ public class LangChat extends JavaPlugin
         instance = this;
         eventRegister.registerEvents();
         commandRegister.registerCommands();
-        guiRegister.registerGUIs();
         FileManager.loadConfigs();
         connection.mysqlSetup();
-
+        setter = new MySQLSetterGetter();
     }
 
     @Override
@@ -43,5 +42,10 @@ public class LangChat extends JavaPlugin
     public String getVersion()
     {
         return version;
+    }
+
+    public MySQLConnection getConnection()
+    {
+        return connection;
     }
 }

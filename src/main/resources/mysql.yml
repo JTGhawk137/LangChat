@@ -3,3 +3,4 @@ database: name
 username: username
 password: password
 port: 3306
+table: table_name

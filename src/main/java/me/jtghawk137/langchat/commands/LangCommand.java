@@ -2,13 +2,19 @@ package me.jtghawk137.langchat.commands;
 
 import me.jtghawk137.langchat.LangChat;
 import me.jtghawk137.langchat.config.FileManager;
+import me.jtghawk137.langchat.mysql.MySQLSetterGetter;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
+
 public class LangCommand implements CommandExecutor
 {
+
+    private MySQLSetterGetter setter = new MySQLSetterGetter();
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args)
@@ -22,6 +28,9 @@ public class LangCommand implements CommandExecutor
             player.sendMessage("§7Usage§c: §7/lang add; remove; change; see; info");
             return true;
         }
+        /**
+         * Add a language
+         */
         if (args[0].equalsIgnoreCase("add"))
         {
             String pLanguage = null;
@@ -43,12 +52,12 @@ public class LangCommand implements CommandExecutor
                 player.sendMessage("§cPlease enter a valid proficiency level");
                 return true;
             }
-            proficiency = args[2];
-            /*
-            * MySQL here
-            */
-            player.sendMessage("§f" + pLanguage + " §ahas been added with a proficiency of§f " + proficiency.toUpperCase() + "§a!");
+            proficiency = args[2].toUpperCase();
+            setter.addLanguage(player, player.getUniqueId(), pLanguage, proficiency);
         }
+        /**
+         * Remove a language
+         */
         if (args[0].equalsIgnoreCase("remove"))
         {
             String pLanguage;
@@ -61,9 +70,7 @@ public class LangCommand implements CommandExecutor
             if (FileManager.get("languages.yml").getList("Languages").contains(args[1]))
             {
                 pLanguage = args[1];
-                /*
-                * MySQL here
-                */
+                setter.removeLanguage(player.getUniqueId(), pLanguage);
                 player.sendMessage("§f" + pLanguage + " §ahas been removed.");
             } else
             {
@@ -71,6 +78,9 @@ public class LangCommand implements CommandExecutor
                 return true;
             }
         }
+        /**
+         * Change a language
+         */
         if (args[0].equalsIgnoreCase("change"))
         {
             String pLanguage = null;
@@ -93,17 +103,39 @@ public class LangCommand implements CommandExecutor
                 return true;
             }
             proficiency = args[2];
-            /*
-             * MySQL here
-             */
+            setter.changeLanguage(player.getUniqueId(), pLanguage, proficiency);
             player.sendMessage("§f" + pLanguage + " §ahas been changed to a proficiency of§f " + proficiency.toUpperCase() + "§a!");
         }
+        /**
+         * See others languages
+         */
         if (args[0].equalsIgnoreCase("see"))
         {
-            /*
-             * Nothing for now.
-             */
+            if (args.length != 2)
+            {
+                player.sendMessage("§7Usage§c: §7/lang see <player name>");
+                return true;
+            }
+            for (Player p : Bukkit.getOnlinePlayers())
+            {
+                if (args[1].equalsIgnoreCase(p.getName()))
+                {
+                    Map<String, String> langs = setter.getLanguages(p.getUniqueId());
+                    player.sendMessage("§aPlayer: §f" + p.getName());
+                    if (langs.isEmpty())
+                    {
+                        player.sendMessage("§cNo languages found for this user.");
+                    }
+                    for (Map.Entry<String, String> e : langs.entrySet())
+                    {
+                        player.sendMessage("§b" + e.getKey() + " §7-§f " + e.getValue());
+                    }
+                }
+            }
         }
+        /**
+         * Info about the plugin
+         */
         if (args[0].equalsIgnoreCase("info"))
         {
             player.sendMessage("§bLangChat");
