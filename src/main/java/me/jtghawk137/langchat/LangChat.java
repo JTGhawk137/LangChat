@@ -1,6 +1,7 @@
 package me.jtghawk137.langchat;
 
 import me.jtghawk137.langchat.commands.CommandRegister;
+import me.jtghawk137.langchat.config.FileManager;
 import me.jtghawk137.langchat.events.EventRegister;
 import me.jtghawk137.langchat.gui.GUIRegister;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +27,7 @@ public class LangChat extends JavaPlugin
         eventRegister.registerEvents();
         commandRegister.registerCommands();
         guiRegister.registerGUIs();
+        FileManager.loadConfigs();
     }
 
     @Override
