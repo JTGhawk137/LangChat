@@ -4,6 +4,7 @@ import me.jtghawk137.langchat.commands.CommandRegister;
 import me.jtghawk137.langchat.config.FileManager;
 import me.jtghawk137.langchat.events.EventRegister;
 import me.jtghawk137.langchat.gui.GUIRegister;
+import me.jtghawk137.langchat.mysql.MySQLConnection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LangChat extends JavaPlugin
@@ -13,6 +14,7 @@ public class LangChat extends JavaPlugin
     private EventRegister eventRegister = new EventRegister();
     private CommandRegister commandRegister = new CommandRegister();
     private GUIRegister guiRegister = new GUIRegister();
+    private MySQLConnection connection = new MySQLConnection();
     private String version = getDescription().getVersion();
 
     public static LangChat getInstance()
@@ -28,6 +30,8 @@ public class LangChat extends JavaPlugin
         commandRegister.registerCommands();
         guiRegister.registerGUIs();
         FileManager.loadConfigs();
+        connection.mysqlSetup();
+
     }
 
     @Override

@@ -4,6 +4,6 @@ author: JTGhawk137
 description: Language learning chat plugin
 version: 1.0.0
 commands:
-    test:
-        description: Test GUI's
+    lang:
+        description: Set your language learning preferences
         usage: /<command>

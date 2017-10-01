@@ -13,6 +13,6 @@ public class CommandRegister
 
     public void registerCommands()
     {
-        LangChat.getInstance().getCommand("test").setExecutor(new GUITest());
+        LangChat.getInstance().getCommand("lang").setExecutor(new LangCommand());
     }
 }

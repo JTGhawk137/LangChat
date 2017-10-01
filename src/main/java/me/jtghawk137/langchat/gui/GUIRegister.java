@@ -15,8 +15,11 @@ public class GUIRegister
         return guis;
     }
 
+    private ProficiencyGUI proficiencyGUI;
+
     public void registerGUIs()
     {
-        guis.put("LangSelect", new LanguageGUI("name", 9).getInventory());
+        proficiencyGUI = new ProficiencyGUI();
+        guis.put("ProficiencySelect", ProficiencyGUI.getInv());
     }
 }

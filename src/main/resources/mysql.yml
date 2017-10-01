@@ -1,5 +1,5 @@
-host:
-database:
-username:
-password:
-proxy:
+host: localhost
+database: name
+username: username
+password: password
+port: 3306
