@@ -1,6 +1,7 @@
 package me.jtghawk137.langchat.mysql;
 
 import me.jtghawk137.langchat.LangChat;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
@@ -34,57 +35,67 @@ public class MySQLSetterGetter
         return false;
     }
 
+
     public void addLanguage(Player player, UUID uuid, String language, String level)
     {
-        try
-        {
-            if (!languageExists(uuid, language))
-            {
-                PreparedStatement statement = connection.getConnection().prepareStatement("INSERT INTO " + connection.table + " (uuid, languages, mlevel) VALUES (?, ?, ?)");
-                statement.setString(1, uuid.toString());
-                statement.setString(2, language);
-                statement.setString(3, level);
-                statement.executeUpdate();
-                player.sendMessage("§f" + language + " §ahas been added with a proficiency of§f " + level + "§a!");
-            } else
-            {
-                player.sendMessage("§cYou have already added that language.");
-            }
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-
+        Bukkit.getScheduler().runTaskAsynchronously(LangChat.getInstance(), () -> {
+                    try
+                    {
+                        if (!languageExists(uuid, language))
+                        {
+                            PreparedStatement statement = connection.getConnection().prepareStatement("INSERT INTO " + connection.table + " (uuid, languages, mlevel) VALUES (?, ?, ?)");
+                            statement.setString(1, uuid.toString());
+                            statement.setString(2, language);
+                            statement.setString(3, level);
+                            statement.executeUpdate();
+                            player.sendMessage("§f" + language + " §ahas been added with a proficiency of§f " + level + "§a!");
+                        } else
+                        {
+                            player.sendMessage("§cYou have already added that language.");
+                        }
+                    } catch (SQLException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+        );
     }
 
     public void removeLanguage(UUID uuid, String language)
     {
-        try
-        {
-            PreparedStatement statement = connection.getConnection().prepareStatement(
-                    "DELETE FROM " + connection.table + " WHERE uuid = ? AND languages = ?");
-            statement.setString(1, uuid.toString());
-            statement.setString(2, language);
-            statement.executeUpdate();
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(LangChat.getInstance(), () -> {
+                    try
+                    {
+                        PreparedStatement statement = connection.getConnection().prepareStatement(
+                                "DELETE FROM " + connection.table + " WHERE uuid = ? AND languages = ?");
+                        statement.setString(1, uuid.toString());
+                        statement.setString(2, language);
+                        statement.executeUpdate();
+                    } catch (SQLException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+        );
     }
+
 
     public void changeLanguage(UUID uuid, String language, String proficiency)
     {
-        try
-        {
-            PreparedStatement statement = connection.getConnection().prepareStatement("UPDATE " + connection.table + " SET mlevel=? WHERE uuid=? AND languages=?");
-            statement.setString(1, proficiency);
-            statement.setString(2, uuid.toString());
-            statement.setString(3, language);
-            statement.executeUpdate();
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(LangChat.getInstance(), () -> {
+                    try
+                    {
+                        PreparedStatement statement = connection.getConnection().prepareStatement("UPDATE " + connection.table + " SET mlevel=? WHERE uuid=? AND languages=?");
+                        statement.setString(1, proficiency);
+                        statement.setString(2, uuid.toString());
+                        statement.setString(3, language);
+                        statement.executeUpdate();
+                    } catch (SQLException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+        );
     }
 
     public Map<String, String> getLanguages(UUID uuid)
@@ -97,24 +108,26 @@ public class MySQLSetterGetter
             return diff == 0 ? o1.compareTo(o2) : diff;
         });
 
-        try
-        {
-            PreparedStatement stmt = connection.getConnection().prepareStatement("SELECT languages, mlevel FROM " + connection.table + " WHERE uuid=?");
-            stmt.setString(1, uuid.toString());
-            ResultSet results = stmt.executeQuery();
-            while (results.next())
-            {
-                langscontainer.put(results.getString(1), results.getString(2));
-                langs.put(results.getString(1), results.getString(2));
-            }
-            results.close();
-            stmt.close();
-        } catch (SQLException e)
-        {
-            System.out.println("Could not get language mastery data from DB");
-            e.printStackTrace();
-        }
-
+        Bukkit.getScheduler().runTaskAsynchronously(LangChat.getInstance(), () -> {
+                    try
+                    {
+                        PreparedStatement stmt = connection.getConnection().prepareStatement("SELECT languages, mlevel FROM " + connection.table + " WHERE uuid=?");
+                        stmt.setString(1, uuid.toString());
+                        ResultSet results = stmt.executeQuery();
+                        while (results.next())
+                        {
+                            langscontainer.put(results.getString(1), results.getString(2));
+                            langs.put(results.getString(1), results.getString(2));
+                        }
+                        results.close();
+                        stmt.close();
+                    } catch (SQLException e)
+                    {
+                        System.out.println("Could not get language mastery data from DB");
+                        e.printStackTrace();
+                    }
+                }
+        );
         return langs;
     }
 }
